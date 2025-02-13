@@ -33,7 +33,7 @@ import AdminOrders from './components/admin/AdminOrders';
 import AdminOrderDetailsPage from './components/admin/AdminOrderDetailsPage';
 
 function App() {
-
+  axios.defaults.baseURL = 'https://full-stack-ecommerce-website-backend-mnja.onrender.com';
   const dispatch = useDispatch();
   const { message } = useSelector((state) => state.user);
 

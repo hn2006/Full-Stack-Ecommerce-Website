@@ -15,9 +15,10 @@ const fileupload=require('express-fileupload');
 const authentication = require('./controllers/auth');
 const authRole = require('./utils/authrole');
 const dashboard=require('./controllers/dashboardController');
+const cors = require('cors');
 
 
-
+app.use(cors())
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(fileupload());
 app.use(cookieParser());
