@@ -122,9 +122,4 @@ We welcome contributions! Fork this repository, create a feature branch, and sub
 
 ---
 
-## 📬 Contact
-📧 Email: [your-email@example.com](mailto:your-email@example.com)
-
----
-
 🌟 **Star this project if you find it useful!** 🌟
