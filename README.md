@@ -38,12 +38,12 @@ Welcome to the **E-Commerce Website**, a modern and feature-rich online shopping
 ## 📂 Project Structure
 ```
 E-Commerce-Website/
-├── client/       # Frontend (React.js)
+├── frontend/       # Frontend (React.js)
 │   ├── src/
 │   ├── public/
 │   ├── package.json
 │   └── ...
-├── server/       # Backend (Node.js, Express.js, MongoDB, Stripe)
+├── backend/       # Backend (Node.js, Express.js, MongoDB, Stripe)
 │   ├── controllers/
 │   ├── models/
 │   ├── routes/
@@ -60,40 +60,35 @@ E-Commerce-Website/
 
 ### 1️⃣ Clone the Repository
 ```bash
-git clone https://github.com/your-username/ecommerce-website.git
+git clone https://github.com/hn2006/Full-Stack-Ecommerce-Website.git
 cd ecommerce-website
 ```
 
 ### 2️⃣ Install Dependencies
 #### Frontend
 ```bash
-cd client
+cd frontend
 npm install
 ```
 #### Backend
 ```bash
-cd ../server
+cd ../backend
 npm install
 ```
 
 ### 3️⃣ Configure Environment Variables
-Create a `.env` file in the `server/` directory and add:
-```env
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret_key
-STRIPE_SECRET=your_stripe_secret_key
-```
+Create a `.env` file in the `backend/` directory and add:
 
 ### 4️⃣ Run the Development Server
 #### Start Backend
 ```bash
-cd server
-npm run dev
+cd backend
+node app.js
 ```
 #### Start Frontend
 ```bash
-cd ../client
-npm start
+cd ../frontend
+npm run start
 ```
 
 ---
@@ -124,11 +119,6 @@ npm start
 
 ## 🤝 Contributing
 We welcome contributions! Fork this repository, create a feature branch, and submit a pull request. 🎉
-
----
-
-## 📜 License
-MIT License
 
 ---
 
