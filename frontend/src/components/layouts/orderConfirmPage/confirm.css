@@ -1,0 +1,308 @@
+.confirm-container {
+  width: 80%;
+  height: 90%;
+  border-radius: 10px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  background-color: #f2f9cf;
+  margin-top: 20px;
+}
+.main-confirm-container {
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 73vh;
+  margin-top: 27px;
+}
+.confirm-container-heading {
+  font-size: 3.2rem;
+  color: rgb(243, 228, 222);
+  text-align: center;
+  font-weight: 400;
+  margin-bottom: 10px;
+  border-bottom: 2px solid rgb(245, 236, 236);
+  margin-top: 30px;
+  width: 97%;
+  padding: 20px;
+}
+.confirm-left-div {
+  width: 70%;
+  height: 102%;
+}
+.order-details-user {
+  height: 40%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.order-details-user .details-box {
+  width: 49%;
+  height: 90%;
+  border: 2px solid rgb(250, 24, 35);
+  padding: 20px;
+  background-color: rgb(254, 254, 254);
+  border-radius: 10px;
+  margin-left: 10px;
+  position: relative;
+}
+.details-box h2 {
+  font-size: 2.3rem;
+  color: rgb(88, 66, 3);
+  padding: 5px;
+  border-bottom: 3px solid black;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  width: 83%;
+  margin-bottom: 8px;
+}
+.details-box table {
+  height: 70px;
+  font-size: 1.6rem;
+  text-align: center;
+  width: 250px;
+  color: rgb(20, 20, 117);
+}
+.details-box td {
+  padding: 0px;
+  border-radius: 10px;
+}
+.order-details-user .details-box .details {
+  color: black;
+  font-size: 1.4rem;
+}
+.order-items-container {
+  background-color: beige;
+  /* height: 70%; */
+  /* min-height: 50%; */
+  max-height: 55.5%;
+  margin-left: 10px;
+  padding: 10px;
+  overflow: scroll;
+  border-radius: 5px;
+  border-top: 4px solid blue;
+  margin-top: 10px;
+}
+.order-items-container h2 {
+  font-size: 3.2rem;
+  color: rgb(89, 65, 65);
+  width: 97%;
+  margin-left: 5px;
+  padding: 5px;
+  padding-left: 15px;
+  border-bottom: 2px solid black;
+}
+.single-order-items-container {
+  height: 130px;
+  border: 3px solid rgb(26, 4, 4);
+  border-radius: 10px;
+  width: 98%;
+  box-sizing: border-box;
+  position: relative;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.order-product-image {
+  width: 20%;
+  height: 100%;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.single-order-items-container img {
+  position: absolute;
+  height: 95%;
+  width: 120px;
+  border-radius: 10px;
+}
+.order-product-details {
+  width: 50%;
+  height: 90%;
+  color: black;
+  padding: 10px;
+}
+.order-product-details div {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: rgb(78, 73, 68);
+}
+.order-product-details .order-items-product-name {
+  width: 70%;
+  font-size: 2.8rem;
+  font-weight: 500;
+  color: rgb(177, 82, 35);
+}
+.order-product-price {
+  width: 15%;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.order-product-price h2 {
+  font-size: 2.5rem;
+  margin-left: 2px;
+  padding-left: 0px;
+  width: 70%;
+}
+.order-product-price div {
+  color: black;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.order-product-price .order-item-total-price {
+  font-size: 2.4rem;
+  font-weight: 400;
+  color: brown;
+}
+.confirm-right-div {
+  width: 28%;
+  height: 97%;
+  background-color: antiquewhite;
+  padding: 10px;
+  border-radius: 10px;
+}
+.confirm-right-div h2 {
+  font-size: 3.7rem;
+  color: black;
+  border-bottom: 2px solid brown;
+  margin-bottom: 20px;
+}
+.pricing-category {
+  display: flex;
+  height: 30px;
+  justify-content: center;
+  align-items: center;
+}
+.pricing-category div {
+  width: 50%;
+  color: rgb(29, 21, 36);
+}
+.pricing-category .pricing-label {
+  text-align: left;
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+.pricing-category .pricing-info {
+  text-align: right;
+  font-size: 1.2rem;
+}
+.pricing-category .larger-label {
+  text-align: left;
+  font-size: 2.7rem;
+  font-weight: 400;
+}
+.pricing-category .larger-pricing {
+  text-align: right;
+  font-size: 1.6rem;
+}
+.order-summary-submit-button {
+  margin-top: 10px;
+  width: 100%;
+  height: 40px;
+  border: none;
+  background: linear-gradient(to bottom right, #f73b19, #a3c50d);
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: "Open Sans";
+  font-weight: 600;
+  color: #202020;
+}
+
+.order-items-container::-webkit-scrollbar {
+  height: 0px;
+}
+
+/* Track */
+/* .order-items-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+} */
+
+/* Handle */
+/* .order-items-container::-webkit-scrollbar-thumb {
+  background: #888;
+} */
+
+/* Handle on hover */
+/* .order-items-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+} */
+.order-details-page-container{
+
+  height: 100%;
+  box-shadow: rgba(70, 244, 244, 0.35) 0px 6px 15px;
+  transition: 500ms ease-in;
+
+}
+
+.order-items-page-container {
+  background-color: beige;
+  height: 50%;
+  /* min-height: 50%; */
+  max-height: 75.5%;
+  margin-left: 10px;
+  padding: 10px;
+  overflow: scroll;
+  border-radius: 5px;
+  border-top: 4px solid blue;
+  margin-top: 10px;
+}
+
+.main-confirm-order-page-container {
+  height: 93vh;
+}
+.order-details-page-container:hover{
+
+ box-shadow: none;
+
+}
+.Payment-details-container{
+
+  border: 2px solid rgb(69, 65, 60);
+  padding: 15px;
+  margin-top: 30px;
+  border-radius: 10px;
+}
+.Payment-details-container h2{color: rgb(115, 108, 107);}
+
+.Payment-details-container .pricing-status-success{
+
+  color: green;
+  background-color: rgb(189, 250, 189);
+  padding: 5px;
+  width: 90px;
+  text-align: center;
+  font-size: 1.4rem;
+  border: 2px solid rgb(10, 34, 3);
+  border-radius: 20px;
+  font-weight: 500;
+  margin-left: 50px;
+}
+.Payment-details-container .pricing-status-fail{
+
+  color: rgb(236, 46, 25);
+  background-color: rgb(234, 151, 141);
+  padding: 5px;
+  width: 80px;
+  text-align: center;
+  font-size: 1.4rem;
+  border: 2px solid red;
+  border-radius: 20px;
+  font-weight: 500;
+  margin-left: 60px;
+
+}
+
+.Payment-details-container .payment-id{
+  text-align: left;
+  width: 70%;
+  color: rgb(59, 60, 60);
+  font-weight: 500;
+}

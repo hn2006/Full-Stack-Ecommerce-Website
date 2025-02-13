@@ -1,0 +1,17 @@
+.home-page{
+
+    display: inline-block;
+}
+.home-page-featured-products-heading{
+
+    width: 100vw;
+    height: 200px;
+    background-color: rgb(13, 13, 52);
+    color: rgb(101, 70, 180);
+    text-align: center;
+    clip-path: polygon(100% 0, 100% 61%, 50% 100%, 0 61%, 0 0);
+    margin-top: 1rem;
+    font-size: 4.2rem;
+    padding-top: 4rem;
+    margin-bottom: 100px;
+}

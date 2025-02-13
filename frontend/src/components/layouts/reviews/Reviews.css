@@ -1,0 +1,24 @@
+.all-reviews-container {
+  height: 40vh;
+  max-width: 100vw;
+  overflow-x: scroll;
+  display: flex;
+  overflow-y: hidden;
+  /* background-color: rgb(7, 15, 60); */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+}
+.no-review-till-now {
+  width: 70%;
+  height: 81%;
+  background-color: #eff6da;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0px 20px 40px #e2e9f333;
+  color: #2f3841;
+}

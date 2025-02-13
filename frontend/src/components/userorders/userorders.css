@@ -1,0 +1,83 @@
+.my-orders-container{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.orders-data {
+    max-width: 100%;
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 90vw;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin-top: 10px;
+    border: 5px solid rgb(103, 26, 157);
+  }
+  .order-table{
+
+    background-color: rgb(241, 245, 205);
+    width: 100%;
+    position: absolute;
+  }
+
+  .MuiDataGrid-cell{
+
+    font-size: 1.5rem;
+    text-align: center;
+    color: rgb(147, 50, 9);
+    border: 2px solid rgb(97, 69, 69);
+    transition: 400ms ease-in;
+  }
+  .MuiDataGrid-cell:hover{
+    background-color: rgb(193, 245, 240);
+    color: rgb(48, 17, 114);
+  }
+  .MuiDataGrid-columnHeaderTitleContainer{
+
+    font-size: 2.3rem;
+    color: rgb(30, 4, 55);
+  }
+  .MuiDataGrid-columnHeaders{
+    background-color: rgb(199, 192, 252);
+  }
+  .MuiDataGrid-cellContent{
+    padding-left: 20px;
+  }
+  .MuiDataGrid-columnHeaderTitle{
+    padding-left: 20px;
+  }
+  .MuiDataGrid-row{
+
+   border: 1px solid rgb(240, 209, 209);
+  }
+  .MuiDataGrid-row:nth-of-type(2n){
+    background-color: rgb(252, 237, 223);
+  }
+  .redColor{
+    background-color: rgb(246, 215, 212);
+    color: red;
+  }
+  .MuiDataGrid-columnHeader{
+    text-align: center;
+  }
+  .my-orders-heading{
+
+    margin-top: 130px;
+    padding: 10px;
+    border-bottom: 2px solid orangered;
+    width: 80%;
+    text-align: center;
+    font-size: 2.8rem;
+  }
+
+  .greenColor{
+
+    background-color: rgb(204, 240, 154);
+    color: rgb(35, 211, 56);
+  }

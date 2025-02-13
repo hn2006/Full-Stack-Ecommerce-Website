@@ -1,0 +1,6 @@
+.products-main-container{
+
+    display: flex;
+    width: 100vw;
+    justify-content: space-evenly;
+}
