@@ -37,40 +37,22 @@ export const registerUser = (userData) => async (dispatch) => {
         })
     }
 }
+
 export const login = (userData) => async (dispatch) => {
-
     try {
-
-        dispatch({
-
-            type: USER_REQUEST
-        })
-
-        const { data } = await axios.post('/user/login', userData, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        dispatch({
-
-            type: USER_SUCCESS,
-            payload: data,
-        })
-
+      dispatch({ type: USER_REQUEST });
+      const { data } = await axios.post('/user/login', userData, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      localStorage.setItem('token', data.token);
+      dispatch({ type: USER_SUCCESS, payload: data.user });
+    } catch (err) {
+      dispatch({
+        type: USER_FAIL,
+        payload: err.response?.data?.error?.message || err.message,
+      });
     }
-    catch (error) {
-
-        console.log(error);
-
-        dispatch({
-
-            type: USER_FAIL,
-            payload: error.response.data.error.message
-
-        })
-    }
-}
+  };
 
 
 export const loaduser = () => async (dispatch) => {
@@ -104,30 +86,15 @@ export const loaduser = () => async (dispatch) => {
     }
 }
 
- export const logoutUser=() => async (dispatch) => {
-
+export const logoutUser = () => async (dispatch) => {
     try {
-
-        await axios.get('/user/logout');
-
-        dispatch({
-
-            type: LOGOUT_USER_SUCCESS,
-        })
-
+      await axios.get('/user/logout');
+      localStorage.removeItem('token');
+      dispatch({ type: LOGOUT_USER_SUCCESS });
+    } catch {
+      dispatch({ type: LOGOUT_USER_FAIL, payload: 'Logout failed' });
     }
-    catch (error) {
-
-        console.log(error);
-
-        dispatch({
-
-            type: LOGOUT_USER_FAIL,
-            payload: 'logout fail'
-
-        })
-    }
-}
+};
 
 export const updateUser=(userdata) => async (dispatch) => {
 

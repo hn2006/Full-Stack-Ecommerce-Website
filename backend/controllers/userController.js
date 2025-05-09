@@ -67,12 +67,6 @@ exports.userLogin = async (req, res, next) => {
 
 exports.logOut = async (req, res, next) => {
 
-    res.cookie('token', null, {
-
-        expires: new Date(Date.now()),
-        httpOnly: true
-    })
-
     return res.status(200).json({ success: true, message: "logout successful" });
 }
 
@@ -95,7 +89,7 @@ exports.forgotPassword = async (req, res, next) => {
 
 
 
-    const url = `http://localhost:3000/resetpassword/${resetToken}`;
+    const url = `${req.protocol}://${req.get('host')}/resetpassword/${resetToken}`;
 
 
     console.log(url);

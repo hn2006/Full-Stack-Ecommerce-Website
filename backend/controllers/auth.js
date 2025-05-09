@@ -3,23 +3,26 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 
 const authentication = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
 
-    const { token } = req.cookies;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return next(new ErrorHandler('Login first to continue', 401));
+  }
 
-    if (!token) {
+  const token = authHeader.split(' ')[1];
 
-        return next(new ErrorHandler('login first to continue', 401));
+  try {
+    const decodedData = jwt.verify(token, 'HHASHJKDHSHKHDHSAHHKSAHKHDHDHASKHKHNBSB');
+    req.user = await User.findOne({ _id: decodedData.id });
+
+    if (!req.user) {
+      return next(new ErrorHandler('User not found', 404));
     }
 
-    const decodedData = jwt.verify(token, 'HHASHJKDHSHKHDHSAHHKSAHKHDHDHASKHKHNBSB');
-
-    console.log(decodedData);
-
-    req.user = await User.findOne({_id:decodedData.id});
-
-    console.log(req.user.id);
-    
     next();
-}
+  } catch (err) {
+    return next(new ErrorHandler('Invalid or expired token', 401));
+  }
+};
 
-module.exports=authentication;
+module.exports = authentication;
