@@ -46,7 +46,7 @@ export const userReducer = (state = defaultStage, actions) => {
 
                 loading: false,
                 isauthenticated: true,
-                user: actions.payload
+                user: actions.payload.user
             }
         }
         case REGISTER_USER_FAIL: {
