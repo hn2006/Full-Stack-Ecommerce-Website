@@ -60,7 +60,7 @@ const AccountPage = () => {
     return (
         <div>
 
-            {(!loading) ? (<div>
+            {(loading&&!loading) ? (<div>
                 <Header></Header>
 
                 <div className='profile-container'>
