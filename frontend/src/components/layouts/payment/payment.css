@@ -1,100 +1,110 @@
-.paymentContainer {
-  display: grid;
-  place-items: center;
-  background-color: rgb(255, 255, 255);
-  height: 65vh;
-  margin: 2vmax;
-  width: 50vw;
-  margin-left: 25vw;
-  border-radius: 10px;
-  padding: 2rem;
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+/* Ensure Roboto everywhere */
+body,
+.paymentForm,
+.inputWrapper,
+.paymentMethodsWrapper {
+  font-family: 'Roboto', sans-serif;
 }
 
 .paymentForm {
-  width: 52%;
-  height: 100%;
-  border: 1px solid red;
-  border-radius: 10px;
-  padding: 2rem;
-  background-color: antiquewhite;
+  width: 100%;
 }
 
-.paymentForm > p {
-  font: 400 2vmax "Roboto";
-  color: rgba(0, 0, 0, 0.753);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.13);
-  padding: 1vmax 0;
-  text-align: center;
-  width: 50%;
-  margin: auto;
-}
-
-.paymentForm > div {
+.inputWrapper {
   display: flex;
   align-items: center;
-  margin: 2vmax 0;
-  width: 100%;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  background-color: #f9f9f9;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+/* Disable wrapper glow on focus */
+.inputWrapper:focus-within {
+  box-shadow: none !important;
+  border-color: #e0e0e0 !important;
+}
+
+.inputIcon {
+  margin-right: 12px;
+  font-size: 1.8rem;
+  color: #757575;
 }
 
 .paymentInput {
-  padding: 1vmax 4vmax;
-  padding-right: 1vmax;
   width: 100%;
-  box-sizing: border-box;
-  border: 1px solid rgba(0, 0, 0, 0.267);
-  border-radius: 4px;
-  outline: none;
-}
-
-.paymentForm > div > svg {
-  position: absolute;
-  transform: translateX(1vmax);
-  font-size: 1.6vmax;
-  color: rgba(0, 0, 0, 0.623);
+  padding: 8px 0;
+  font-family: inherit;
 }
 
 .paymentFormBtn {
   border: none;
-  background: linear-gradient(to bottom right, #f73b19, #a3c50d);
-  color: white;
-  font: 300 0.9vmax "Roboto";
+  background-color: #1976d2;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
   width: 100%;
-  padding: 0.8vmax;
+  padding: 16px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.5s;
-  outline: none;
-  border-radius: 5px;
+  transition: transform 0.2s, background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
+}
+.paymentFormBtn:hover:not(:disabled) {
+  background-color: #1565c0;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(25, 118, 210, 0.3);
+}
+.paymentFormBtn:disabled {
+  background-color: #90caf9;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-.paymentFormBtn:hover {
-  background-color: rgb(179, 66, 46);
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-@media screen and (max-width: 600px) {
-  .paymentForm {
-    width: 90%;
-  }
+/* Disable Stripe’s own focus glow */
+.StripeElement--focus {
+  box-shadow: none !important;
+  border-color: #e0e0e0 !important;
+}
 
-  .paymentForm > p {
-    font: 400 8vw "Roboto";
-    padding: 4vw 0;
-    width: 60%;
-  }
+/* Payment methods graphic */
+.paymentMethodsWrapper {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+.paymentMethods {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
 
-  .paymentForm > div {
-    margin: 10vw 0;
-  }
-
-  .paymentInput {
-    padding: 4vw 10vw;
-  }
-
-  .paymentForm > div > svg {
-    font-size: 6vw;
-  }
-
+/* Responsive tweaks */
+@media (max-width: 768px) {
   .paymentFormBtn {
-    font: 300 4vw "Roboto";
-    padding: 4vw;
+    padding: 14px;
+    font-size: 1rem;
   }
 }

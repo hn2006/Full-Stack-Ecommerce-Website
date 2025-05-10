@@ -34,7 +34,6 @@ import AdminOrderDetailsPage from './components/admin/AdminOrderDetailsPage';
 import './axiosConfig'
 
 function App() {
-  // axios.defaults.baseURL = 'https://full-stack-ecommerce-website-backend-mnja.onrender.com';
   const dispatch = useDispatch();
   const { message } = useSelector((state) => state.user);
 

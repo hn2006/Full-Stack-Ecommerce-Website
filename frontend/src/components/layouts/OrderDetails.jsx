@@ -1,141 +1,207 @@
-import React, { useEffect } from 'react'
-import './orderConfirmPage/confirm.css'
-import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
-import HouseIcon from '@mui/icons-material/House';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getOrder } from '../../actions/orderActions';
 import { useParams } from 'react-router-dom';
-import Loader from './loader/loader';
+import { 
+  Box, 
+  Typography, 
+  Card, 
+  Divider, 
+  Table, 
+  TableBody, 
+  TableRow, 
+  TableCell,
+  CircularProgress
+} from '@mui/material';
+import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
+import HouseIcon from '@mui/icons-material/House';
 import Header from './header/header';
 import Footer from './footer/Footer';
 
 const OrderDetails = () => {
+  const { orderDetails, loading } = useSelector((state) => state.orderDetails);
+  const { orderId } = useParams();
+  const dispatch = useDispatch();
 
-    const { orderDetails, loading } = useSelector((state) => state.orderDetails);
+  useEffect(() => {
+    if (orderId) dispatch(getOrder(orderId));
+  }, [dispatch, orderId]);
 
-    const { orderId } = useParams();
+  if (loading) return (
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <CircularProgress size={80} />
+    </Box>
+  );
 
-    const dispatch = useDispatch();
+  return (
+    <>
+      <Header />
+      <Box sx={{
+        maxWidth: '1200px',
+        margin: '40px auto 0',
+        padding: { xs: '20px', md: '30px' },
+        marginTop:'110px',
+        marginBottom:'50px'
+      }}>
+        <Typography sx={{
+          textAlign: 'center',
+          color: '#1976d2',
+          fontSize: '48px',
+          fontWeight: 600,
+          marginBottom: '24px'
+        }}>
+          Order Details
+        </Typography>
+        <Typography component="span" sx={{
+          display: 'block',
+          color: '#757575',
+          fontSize: '18px',
+          marginTop: '12px',
+          textAlign: 'center'
+        }}>
+          ID#{orderDetails?._id}
+        </Typography>
 
-    useEffect(() => {
-        if (orderId) {
-            dispatch(getOrder(orderId));
-        }
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: '30px', marginTop: '30px' }}>
+          {/* Left Section */}
+          <Box sx={{ flex: 2 }}>
+            {/* Customer & Shipping Info */}
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: '20px', marginBottom: '30px' }}>
+              {/* Customer Card */}
+              <Card sx={{ flex: 1, padding: '24px', borderRadius: '12px', borderLeft: '4px solid #1976d2' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+                  <PermContactCalendarIcon sx={{ color: '#1976d2', fontSize: '40px', marginRight: '15px' }} />
+                  <Typography sx={{ fontSize: '24px', fontWeight: 600 }}>Customer Details</Typography>
+                </Box>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell sx={{ border: 'none', padding: '8px 0', fontSize: '16px', fontWeight: 500 }}>Name:</TableCell>
+                      <TableCell sx={{ border: 'none', padding: '8px 0', fontSize: '16px' }}>{orderDetails?.user?.name}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ border: 'none', padding: '8px 0', fontSize: '16px', fontWeight: 500 }}>Email:</TableCell>
+                      <TableCell sx={{ border: 'none', padding: '8px 0', fontSize: '16px' }}>{orderDetails?.user?.email}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Card>
 
-    }, [dispatch, orderId]);
+              {/* Shipping Card */}
+              <Card sx={{ flex: 1, padding: '24px', borderRadius: '12px', borderLeft: '4px solid #4caf50' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+                  <HouseIcon sx={{ color: '#4caf50', fontSize: '40px', marginRight: '15px' }} />
+                  <Typography sx={{ fontSize: '24px', fontWeight: 600 }}>Shipping Details</Typography>
+                </Box>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell sx={{ border: 'none', padding: '8px 0', fontSize: '16px', fontWeight: 500 }}>Address:</TableCell>
+                      <TableCell sx={{ border: 'none', padding: '8px 0', fontSize: '16px' }}>{orderDetails?.shippingInfo?.address}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ border: 'none', padding: '8px 0', fontSize: '16px', fontWeight: 500 }}>City/State:</TableCell>
+                      <TableCell sx={{ border: 'none', padding: '8px 0', fontSize: '16px' }}>
+                        {`${orderDetails?.shippingInfo?.city}, ${orderDetails?.shippingInfo?.state}`}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ border: 'none', padding: '8px 0', fontSize: '16px', fontWeight: 500 }}>Postal Code:</TableCell>
+                      <TableCell sx={{ border: 'none', padding: '8px 0', fontSize: '16px' }}>{orderDetails?.shippingInfo?.pincode}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell sx={{ border: 'none', padding: '8px 0', fontSize: '16px', fontWeight: 500 }}>Country:</TableCell>
+                      <TableCell sx={{ border: 'none', padding: '8px 0', fontSize: '16px' }}>{orderDetails?.shippingInfo?.country}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Card>
+            </Box>
 
-    return (<>
-        {(loading) ? (<Loader></Loader>) : (
-            <>
-                <Header></Header>
-                <div className='main-confirm-container main-confirm-order-page-container'>
-                    <h2 className='confirm-container-heading' style={{ color: 'cyan', fontSize: '5.2rem', marginTop: '60px' }}>Order Details<span style={{ color: 'grey', fontSize: '1.2rem' }}>Id#{orderDetails && orderDetails._id}</span></h2>
-                    <div className='confirm-container order-details-page-container' style={{ border: '4px solid purple' }}>
-                        <div className='confirm-left-div'>
-                            <div className='order-details-user'>
-                                <div className='details-box'>
-                                    <h2>Customer details</h2>
-                                    <span><PermContactCalendarIcon sx={{ position: 'absolute', right: '10px', top: '30px', fontSize: '6rem', color: 'orangered' }}></PermContactCalendarIcon></span>
-                                    <div className='details'>
-                                        <table cellSpacing={9} style={{ marginTop: '20px' }}>
-                                            <tbody>
-                                                <tr>
-                                                    <td style={{ width: '40px' }}>Name:</td><td style={{ color: 'grey', fontWeight: '700' }}>{orderDetails && orderDetails.user.name}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td >Email:</td><td style={{ color: 'grey', fontWeight: '700' }}>{orderDetails && orderDetails.user.email}</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div className='details-box'>
-                                    <h2>Shipping details</h2>
-                                    <span><HouseIcon sx={{ position: 'absolute', right: '10px', top: '30px', fontSize: '7rem', color: 'orangered' }}></HouseIcon></span>
-                                    <div className='details'>
-                                        <h3>Address</h3>
-                                        <div>{orderDetails && orderDetails.shippingInfo.address}</div>
-                                        <div>{`${orderDetails && orderDetails.shippingInfo.city},${orderDetails && orderDetails.shippingInfo.state}-${orderDetails && orderDetails.shippingInfo.pincode},${orderDetails && orderDetails.shippingInfo.country}`}</div>
-                                        <div>{orderDetails && orderDetails.shippingInfo.country}</div>
-                                    </div>
+            {/* Order Items */}
+            <Card sx={{ padding: '24px', borderRadius: '12px' }}>
+              <Typography sx={{ fontSize: '24px', fontWeight: 600, marginBottom: '20px', paddingBottom: '10px', borderBottom: '1px solid #e0e0e0' }}>
+                Order Items
+              </Typography>
+              {orderDetails?.orderItems?.map((item) => (
+                <Card key={item._id} sx={{ display: 'flex', padding: '16px', marginBottom: '16px', borderRadius: '8px', backgroundColor: '#f5f5f5' }}>
+                  <Box sx={{ width: '80px', height: '80px', marginRight: '20px' }}>
+                    <img
+                      src={item.image || '/images/second.jpg'}
+                      alt={item.name}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }}
+                    />
+                  </Box>
+                  <Box sx={{ flex: 1 }}>
+                    <Typography sx={{ fontSize: '20px', fontWeight: 600 }}>{item.name}</Typography>
+                    <Typography sx={{ fontSize: '16px' }}>Quantity: {item.quantity}</Typography>
+                    <Typography sx={{ fontSize: '16px' }}>Price: ₹{item.price}</Typography>
+                  </Box>
+                  <Box sx={{ textAlign: 'right' }}>
+                    <Typography sx={{ fontSize: '16px', fontWeight: 500 }}>₹{item.price} × {item.quantity}</Typography>
+                    <Typography sx={{ fontSize: '20px', fontWeight: 600, color: '#d32f2f' }}>₹{item.price * item.quantity}</Typography>
+                  </Box>
+                </Card>
+              ))}
+            </Card>
+          </Box>
 
-                                </div>
-                            </div>
-                            <div className='order-items-container order-items-page-container'>
+          {/* Right Section - Order Summary */}
+          <Box sx={{ width: { xs: '100%', md: '350px' } }}>
+            <Card sx={{ padding: '24px', borderRadius: '12px' }}>
+              <Typography sx={{ fontSize: '24px', fontWeight: 600, color: '#1976d2', marginBottom: '20px', paddingBottom: '10px', borderBottom: '1px solid #e0e0e0' }}>
+                Order Summary
+              </Typography>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell sx={{ border: 'none', padding: '8px 0', fontSize: '16px' }}>Order Price:</TableCell>
+                    <TableCell sx={{ border: 'none', padding: '8px 0', textAlign: 'right', fontSize: '16px' }}>₹{orderDetails?.itemsPrice}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ border: 'none', padding: '8px 0', fontSize: '16px' }}>18% GST:</TableCell>
+                    <TableCell sx={{ border: 'none', padding: '8px 0', textAlign: 'right', fontSize: '16px' }}>₹{orderDetails?.itemTaxPrice}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ border: 'none', padding: '8px 0', fontSize: '16px' }}>Shipping:</TableCell>
+                    <TableCell sx={{ border: 'none', padding: '8px 0', textAlign: 'right', fontSize: '16px' }}>{orderDetails?.shippingPrice === 0 ? 'FREE' : `₹${orderDetails?.shippingPrice}`}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+              <Divider sx={{ margin: '15px 0' }} />
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Typography sx={{ fontSize: '20px', fontWeight: 600 }}>Total Price:</Typography>
+                <Typography sx={{ fontSize: '20px', fontWeight: 600, color: '#d32f2f' }}>₹{orderDetails?.TotalPrice}</Typography>
+              </Box>
+              <Typography sx={{ display: 'block', textAlign: 'right', marginTop: '12px', fontSize: '14px', color: '#757575' }}>*Free shipping on orders above ₹1000</Typography>
+            </Card>
 
-                                <h2 className='order-details-heading'>Order Items Details</h2>
-                                {orderDetails && orderDetails.orderItems && orderDetails.orderItems.map((data) => {
-                                    return (
-                                        <div className='single-order-items-container' key={data._id}>
-                                            <div className='order-product-image'>
-                                                <img src='/images/second.jpg' alt='na'></img>
-                                            </div>
-                                            <div className='order-product-details'>
-                                                <div className='order-items-product-name'>{data.name}</div>
-                                                <div>Quantity : {data.quantity}</div>
-                                                <div>Price : {data.price}</div>
-                                            </div>
-                                            <div className='order-product-price'>
-                                                <h2>Price</h2>
-                                                <div>Rs {data.price} x {data.quantity}</div>
-                                                <div className='order-item-total-price'>Rs {data.price * data.quantity}</div>
-                                            </div>
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        </div>
-                        <div className='confirm-right-div'>
-                            <h2 style={{ color: 'orangered' }}>Order Summary</h2>
-                            <div className='pricing-details'>
-                                <div className='pricing-category'>
-                                    <div className='pricing-label larger-label'>Order Price</div>
-                                    <div className='pricing-info larger-pricing'>Rs {orderDetails && orderDetails.itemsPrice}</div>
-                                </div>
-                            </div>
-                            <div className='pricing-details'>
-                                <div className='pricing-category'>
-                                    <div className='pricing-label'>18% GST</div>
-                                    <div className='pricing-info'>Rs {orderDetails && orderDetails.itemTaxPrice}</div>
-                                </div>
-                            </div>
-                            <div className='pricing-details'>
-                                <div className='pricing-category'>
-                                    <div className='pricing-label'>Shipping Charges*</div>
-                                    <div className='pricing-info'>{orderDetails && orderDetails.shippingPrice}</div>
-                                </div>
-                            </div>
-
-                            <div className='pricing-details' style={{ marginTop: '10px', borderTop: '3px solid black', fontSize: '1.8rem', paddingTop: '10px' }}>
-                                <div className='pricing-category'>
-                                    <div className='pricing-label larger-label'>Total Price</div>
-                                    <div className='pricing-info larger-pricing'>Rs {orderDetails && orderDetails.TotalPrice}</div>
-                                </div>
-                            </div>
-                            <div style={{ textAlign: 'right', color: 'grey', marginTop: '10px' }}>*shipping charges are not applicable on orders above rs 1000</div>
-                            <div className='Payment-details-container'>
-                                <h2>Payment Details</h2>
-                                <div className='pricing-details'>
-                                    <div className='pricing-category'>
-                                        <div className='pricing-label'>Payment ID</div>
-                                        <div className='pricing-info payment-id'>{orderDetails &&orderDetails.paymentInfo&& orderDetails.paymentInfo.id}</div>
-                                    </div>
-                                </div>
-                                <div className='pricing-details'>
-                                    <div className='pricing-category'>
-                                        <div className='pricing-label'>Payment status</div>
-                                        <div className= {(orderDetails &&orderDetails.paymentInfo&&orderDetails.paymentInfo.status==='succeeded')?'pricing-status-success pricing-info':'pricing-status-fail pricing-info'}>{orderDetails && orderDetails.paymentInfo.status}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <Footer></Footer>
-            </>
-        )}
+            {/* Payment Details */}
+            <Card sx={{ padding: '24px', borderRadius: '12px', marginTop: '20px' }}>
+              <Typography sx={{ fontSize: '24px', fontWeight: 600, marginBottom: '20px', paddingBottom: '10px', borderBottom: '1px solid #e0e0e0' }}>Payment Details</Typography>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell sx={{ border: 'none', padding: '8px 0', fontSize: '16px' }}>Payment ID:</TableCell>
+                    <TableCell sx={{ border: 'none', padding: '8px 0', textAlign: 'right', fontSize: '16px', wordBreak: 'break-word' }}>
+                      {orderDetails?.paymentInfo?.id || 'N/A'}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ border: 'none', padding: '8px 0', fontSize: '16px' }}>Status:</TableCell>
+                    <TableCell sx={{ border: 'none', padding: '8px 0', textAlign: 'right', fontSize: '16px', color: orderDetails?.paymentInfo?.status === 'succeeded' ? '#4caf50' : '#f44336', fontWeight: 500 }}>
+                      {orderDetails?.paymentInfo?.status?.toUpperCase() || 'N/A'}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </Card>
+          </Box>
+        </Box>
+      </Box>
+      <Footer />
     </>
-    )
-}
+  );
+};
 
-export default OrderDetails
+export default OrderDetails;
