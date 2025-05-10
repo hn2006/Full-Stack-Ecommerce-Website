@@ -17,10 +17,10 @@ export const userReducer = (state = defaultStage, actions) => {
         case USER_SUCCESS: {
 
             return {
-
+                ...state,
                 loading: false,
                 isauthenticated: true,
-                user: actions.payload.user,
+                user: actions.payload,
                 message: 'logged in successfully'
             }
         }
@@ -46,7 +46,7 @@ export const userReducer = (state = defaultStage, actions) => {
 
                 loading: false,
                 isauthenticated: true,
-                user: actions.payload.user
+                user: actions.payload
             }
         }
         case REGISTER_USER_FAIL: {
