@@ -200,7 +200,7 @@ export const createProduct = (productData) => async (dispatch) => {
         dispatch({
 
             type: DASHBOARD_DETAILS_FAIL,
-            payload: error.response.data.error.message
+            payload: error?.response?.data?.message
 
         })
     }
