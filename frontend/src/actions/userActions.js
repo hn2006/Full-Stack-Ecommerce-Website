@@ -17,6 +17,7 @@ export const registerUser = (userData) => async (dispatch) => {
                 "Content-Type": "application/json",
             }
         });
+        localStorage.setItem('token', data.token);
 
         dispatch({
 
@@ -39,19 +40,28 @@ export const registerUser = (userData) => async (dispatch) => {
 }
 
 export const login = (userData) => async (dispatch) => {
+    
     try {
+
       dispatch({ type: USER_REQUEST });
+
       const { data } = await axios.post('/user/login', userData, {
         headers: { 'Content-Type': 'application/json' },
       });
+
       localStorage.setItem('token', data.token);
+
       dispatch({ type: USER_SUCCESS, payload: data.user });
+
     } catch (err) {
+
       dispatch({
         type: USER_FAIL,
         payload: err.response?.data?.error?.message || err.message,
       });
+
     }
+
   };
 
 
