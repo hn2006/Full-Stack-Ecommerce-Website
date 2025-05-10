@@ -24,11 +24,8 @@ const Header = () => {
 
 
     const logoutHandler = async () => {
-
-
-        await dispatch(logoutUser());
         navigate('/home');
-
+        dispatch(logoutUser());
     }
 
 
