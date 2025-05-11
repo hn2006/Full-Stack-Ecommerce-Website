@@ -1,152 +1,288 @@
 import React, { useEffect } from 'react'
-import './dashboard.css';
-import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
-import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import Sidebar from './Sidebar';
-import ChartComponent from './ChartComponent';
-import { useDispatch, useSelector } from 'react-redux';
-import { getdashboardDetails } from '../../actions/productActions';
-import { useNavigate } from 'react-router-dom';
-import Loader from '../layouts/loader/loader';
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { getdashboardDetails } from '../../actions/productActions'
 import { toast } from 'react-toastify'
-import LineChart from './LineChart';
-import { motion } from 'framer-motion';
+import {
+  CurrencyRupee as CurrencyRupeeIcon,
+  ShoppingBag as ShoppingBagIcon,
+  AccountBox as AccountBoxIcon,
+} from '@mui/icons-material'
+import {
+  Box,
+  Grid,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from '@mui/material'
+import Loader from '../layouts/loader/loader'
+import Sidebar from './Sidebar'
+import ChartComponent from './ChartComponent'
+import LineChart from './LineChart'
 
 const Dashboard = () => {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { dashboardData, error, loading } = useSelector((state) => state.dashboardDetails)
 
-    const navigate = useNavigate();
+  useEffect(() => {
+    dispatch(getdashboardDetails())
+  }, [dispatch])
 
-    const { dashboardData, error, loading } = useSelector((state) => state.dashboardDetails);
+  useEffect(() => {
+    if (error) {
+      toast.error(error, { theme: 'dark' })
+      navigate('/home')
+    }
+  }, [error, navigate])
 
-
-    useEffect(() => {
-
-        dispatch(getdashboardDetails());
-
-    }, [dispatch]);
-
-    useEffect(() => {
-
-        if (error) {
-
-            toast.error(error, { theme: 'dark' });
-
-            navigate('/home');
-        }
-    }, [error, navigate])
-    return (
-        <>
-            {(loading) ? (<Loader></Loader>) : (<div className='dashboard-main-container'>
-                <Sidebar active={'dashboard'}></Sidebar>
-                <div className='dashboard-container'>
-                    <h2 className='dashboard-heading'>Admin Dashboard</h2>
-                    <div className='dashboard-details-show-box'>
-                        <div className='green-box dashboard-single-details-box'><div className='container-title-box'>Revenue</div>
-                            <div className='symbol-box-container'><div className='amount'>Rs<span className='span'>{dashboardData && dashboardData.totalRevenue[0].Revenue}</span></div><div className='symbol-icon'><CurrencyRupeeIcon sx={{ fontSize: '6.2rem', position: 'relative', bottom: '50px', color: 'green' }}></CurrencyRupeeIcon></div></div>
-                        </div>
-                        <div className='dashboard-single-details-box'><div className='container-title-box'>Orders</div>
-                            <div className='symbol-box-container'><div className='amount'><span className='span'>{dashboardData && dashboardData.orderCount}</span></div><div className='symbol-icon'><ShoppingBagIcon sx={{ fontSize: '6.2rem', position: 'relative', bottom: '50px', color: 'red' }}></ShoppingBagIcon></div></div>
-                        </div>
-                        <div className='dashboard-single-details-box yellow-box'><div className='container-title-box'>Users</div>
-                            <div className='symbol-box-container'><div className='amount'><span className='span'>{dashboardData && dashboardData.userCount}</span></div><div className='symbol-icon'><AccountBoxIcon sx={{ fontSize: '6.2rem', position: 'relative', bottom: '50px', color: 'darkorange' }}></AccountBoxIcon></div></div>
-                        </div>
-                    </div>
-
-                    <div className='Line-chart-styling-box'>
-
-                        <h2 style={{ textAlign: 'center', width: '100%', fontSize: '3.1rem', marginTop: '20px' }} className='table-heading'>Last 30 Days Revenue</h2>
-
-                        <LineChart chartData={dashboardData && dashboardData.revenueLastThirtyDays}></LineChart>
-                    </div>
+  if (loading) return <Loader />
+  const revenue = dashboardData?.totalRevenue[0]?.Revenue;
+  const formattedRevenue = revenue ? revenue.toFixed(2) : '0.00';
 
 
-                    <div className='dashboard-table'>
+  return (
+    <Box sx={{ display: 'flex', minHeight: '100vh', color: '#ffffff', bgcolor: '#0f1117' }}>
+      <Sidebar active={'dashboard'} />
 
-                        <h2 className='table-heading'>Most Recent Orders</h2>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          ml: { sm: '240px' },
+          width: { sm: `calc(100% - 240px)` },
+        }}
+      >
+        <Typography
+          variant="h1"
+          component="h1"
+          gutterBottom
+          sx={{
+            fontSize: '32px',
+            fontWeight: 600,
+            mb: 4,
+            pb: 1,
+            borderBottom: '2px solid #4a90e2',
+          }}
+        >
+          Admin Dashboard
+        </Typography>
 
+        {/* Stats Cards */}
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid item xs={12} md={4}>
+            <MotionBox>
+              <Paper sx={cardStyle}>
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                  <div>
+                    <Typography sx={cardLabel}>Revenue</Typography>
+                    <Typography sx={cardValue}>₹{formattedRevenue}</Typography>
+                  </div>
+                  <CurrencyRupeeIcon sx={iconStyle('#4CAF50')} />
+                </Box>
+              </Paper>
+            </MotionBox>
+          </Grid>
 
-                        <TableContainer component={Paper}>
-                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                <TableHead className='table-row' sx={{ fontSize: '1.5rem' }}>
-                                    <TableRow >
-                                        <TableCell sx={{ fontSize: '2.1rem', fontWeight: '700' }}>Order id</TableCell>
-                                        <TableCell sx={{ fontSize: '1.5rem', fontWeight: '700' }} align="right">quantity</TableCell>
-                                        <TableCell sx={{ fontSize: '1.5rem', fontWeight: '700' }} align="right">amount</TableCell>
-                                        <TableCell sx={{ fontSize: '1.5rem', fontWeight: '700' }} align="right">orderStatus</TableCell>
-                                        <TableCell sx={{ fontSize: '1.5rem', fontWeight: '700' }} align="right">createdAt</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {dashboardData && dashboardData.recentOrders.map((row) => (
-                                        <TableRow
-                                            key={row._id}
-                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                        >
-                                            <TableCell sx={{ fontSize: '1.1rem', fontWeight: '500', color: 'orangered' }} component="th" scope="row">
-                                                {row._id}
-                                            </TableCell>
-                                            <TableCell align="right">{row.orderItems.length}</TableCell>
-                                            <TableCell align="right">{row.TotalPrice}</TableCell>
-                                            <TableCell className={(row.orderStatus === 'processing') ? 'yellow-color-state' : 'green-color-state'} align="right">{row.orderStatus}</TableCell>
-                                            <TableCell align="right">{row.createdAt}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+          <Grid item xs={12} md={4}>
+            <MotionBox delay={0.2}>
+              <Paper sx={cardStyle}>
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                  <div>
+                    <Typography sx={cardLabel}>Orders</Typography>
+                    <Typography sx={cardValue}>{dashboardData?.orderCount}</Typography>
+                  </div>
+                  <ShoppingBagIcon sx={iconStyle('#F44336')} />
+                </Box>
+              </Paper>
+            </MotionBox>
+          </Grid>
 
-                    </div>
-                    <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', marginBottom: '300px' }}>
+          <Grid item xs={12} md={4}>
+            <MotionBox delay={0.4}>
+              <Paper sx={cardStyle}>
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                  <div>
+                    <Typography sx={cardLabel}>Users</Typography>
+                    <Typography sx={cardValue}>{dashboardData?.userCount}</Typography>
+                  </div>
+                  <AccountBoxIcon sx={iconStyle('#FFC107')} />
+                </Box>
+              </Paper>
+            </MotionBox>
+          </Grid>
+        </Grid>
 
-                        {/* <h2 style={{ textAlign: 'center', width: '100%', fontSize: '3.1rem', marginTop: '20px' }} className='table-heading'>Statistics</h2> */}
-                        <div className='charts'>
-                            <motion.div
-                                initial={{ opacity: 0, y: 100 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 2 }}
-                                className='category-chart'
-                            >
-                                <ChartComponent titleName={'Product Status'} chartdata={dashboardData && dashboardData.stockChartData}></ChartComponent>
-                            </motion.div>
-                            <motion.div
-                                initial={{ opacity: 0, y: 100 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 2 }}
-                                className='category-chart'
-                            >
-                                <ChartComponent titleName={'Product Categories'} chartdata={dashboardData && dashboardData.categoriesChartData}></ChartComponent>
-                           </motion.div>
-                            <motion.div
-                                initial={{ opacity: 0, y: 100 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 2 }}
-                                className='category-chart'
-                            >
-                                <ChartComponent titleName={'Order Status'} chartdata={dashboardData && dashboardData.orderStatusChartData}></ChartComponent>
-                           </motion.div>
-                            
-                        </div>
-                    </div>
+        {/* Line Chart */}
+        <MotionBox>
+          <Paper sx={sectionPaper}>
+            <Typography sx={sectionTitle}>Last 30 Days Revenue</Typography>
+            <Box sx={{ height: 400 }}>
+              <LineChart chartData={dashboardData?.revenueLastThirtyDays} />
+            </Box>
+          </Paper>
+        </MotionBox>
 
+        {/* Recent Orders Table */}
+        <MotionBox>
+          <Paper sx={tablePaper}>
+            <Typography sx={sectionTitle}>Recent Orders</Typography>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow sx={{ backgroundColor: '#212b36' }}>
+                    <StyledTableCell>Order ID</StyledTableCell>
+                    <StyledTableCell align="right">Quantity</StyledTableCell>
+                    <StyledTableCell align="right">Amount</StyledTableCell>
+                    <StyledTableCell align="right">Status</StyledTableCell>
+                    <StyledTableCell align="right">Date</StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {dashboardData?.recentOrders.map((row) => (
+                    <TableRow
+                      key={row._id}
+                      sx={{
+                        '&:hover': {
+                          backgroundColor: '#1e2a38',
+                        },
+                      }}
+                    >
+                      <StyledTableCell sx={{ color: '#4a90e2' }}>{row._id}</StyledTableCell>
+                      <StyledTableCell align="right">{row.orderItems.length}</StyledTableCell>
+                      <StyledTableCell align="right">₹{row.TotalPrice}</StyledTableCell>
+                      <StyledTableCell align="right">
+                        <Box
+                          component="span"
+                          sx={{
+                            px: 1.5,
+                            py: 0.5,
+                            fontSize: '14px',
+                            borderRadius: 1,
+                            bgcolor: row.orderStatus === 'processing' ? '#FFF3E0' : '#C8E6C9',
+                            color: row.orderStatus === 'processing' ? '#EF6C00' : '#2E7D32',
+                          }}
+                        >
+                          {row.orderStatus}
+                        </Box>
+                      </StyledTableCell>
+                      <StyledTableCell align="right">{row.createdAt}</StyledTableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
+        </MotionBox>
 
-                </div>
-            </div>)}
-
-        </>
-    )
+        {/* Charts Grid */}
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid item xs={12} md={6} lg={4}>
+            <MotionBox>
+              <Paper sx={sectionPaper}>
+                <ChartComponent title="Product Status" chartdata={dashboardData?.stockChartData} fontSize="20px" />
+              </Paper>
+            </MotionBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={4}>
+            <MotionBox delay={0.2}>
+              <Paper sx={sectionPaper}>
+                <ChartComponent
+                  title="Product Categories"
+                  chartdata={dashboardData?.categoriesChartData}
+                  fontSize="20px"
+                />
+              </Paper>
+            </MotionBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={4}>
+            <MotionBox delay={0.4}>
+              <Paper sx={sectionPaper}>
+                <ChartComponent
+                  title="Order Status"
+                  chartdata={dashboardData?.orderStatusChartData}
+                  fontSize="20px"
+                />
+              </Paper>
+            </MotionBox>
+          </Grid>
+        </Grid>
+      </Box>
+    </Box>
+  )
 }
+
+// Motion animation wrapper
+const MotionBox = ({ children, delay = 0 }) => (
+  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay }}>
+    {children}
+  </motion.div>
+)
+
+// Shared styles
+const cardStyle = {
+  p: 3,
+  bgcolor: '#1c1f26',
+  borderRadius: 3,
+  height: '100%',
+  color: '#ffffff',
+}
+
+const iconStyle = (color) => ({
+  fontSize: '60px',
+  color,
+})
+
+const cardLabel = {
+  fontSize: '18px',
+  color: '#a0a0a0',
+  mb: 1,
+}
+
+const cardValue = {
+  fontSize: '28px',
+  fontWeight: 700,
+}
+
+const sectionPaper = {
+  p: 3,
+  mb: 4,
+  borderRadius: 3,
+  bgcolor: '#1c1f26',
+  color: '#ffffff',
+}
+
+const tablePaper = {
+  p: 3,
+  mb: 4,
+  borderRadius: 3,
+  bgcolor: '#2b2f3a',
+  color: '#ffffff',
+}
+
+const sectionTitle = {
+  fontSize: '24px',
+  fontWeight: 600,
+  mb: 2,
+}
+
+const StyledTableCell = (props) => (
+  <TableCell
+    {...props}
+    sx={{
+      fontSize: '14px',
+      fontWeight: 500,
+      color: '#ffffff',
+      borderBottom: '1px solid #444',
+    }}
+  />
+)
 
 export default Dashboard

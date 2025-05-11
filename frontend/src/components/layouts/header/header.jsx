@@ -72,7 +72,7 @@ const Header = () => {
                             <img
                                 height={50}
                                 width={50}
-                                style={{ border: '2px solid red', borderRadius: '50%' }}
+                                style={{borderRadius: '50%' }}
                                 src={avatarSrc}
                                 alt="User avatar"
                             />

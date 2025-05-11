@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from "react";
-import "./newProduct.css";
+import {
+  Box,
+  Typography,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Button,
+  Avatar,
+} from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
-import AccountTreeIcon from '@mui/icons-material/AccountTree';
-import DescriptionIcon from '@mui/icons-material/Description';
-import StorageIcon from '@mui/icons-material/Storage';
-import SpellcheckIcon from '@mui/icons-material/Spellcheck';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import { NEW_PRODUCT_RESET } from "../../constants/productConstants";
 import Sidebar from "./Sidebar";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { clearErrors, createProduct } from "../../actions/productActions";
-import { Button } from "@mui/material";
 
 const AdminProductCreate = () => {
-
-  const navigate=useNavigate();  
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { loading, error, success } = useSelector((state) => state.newProduct);
@@ -28,24 +31,16 @@ const AdminProductCreate = () => {
   const [images, setImages] = useState([]);
   const [imagesPreview, setImagesPreview] = useState([]);
 
-  const categories = [
-    "Laptop",
-    "Footwear",
-    "Bottom",
-    "Tops",
-    "Attire",
-    "Camera",
-    "SmartPhones",
-  ];
+  const categories = ["Laptop", "Footwear", "Bottom", "Tops", "Attire", "Camera", "SmartPhones"];
 
   useEffect(() => {
     if (error) {
-      toast.error(error,{theme:'dark'});
+      toast.error(error, { theme: "dark" });
       dispatch(clearErrors());
     }
 
     if (success) {
-      toast.success("Product Created Successfully",{theme:'dark'});
+      toast.success("Product Created Successfully", { theme: "dark" });
       navigate("/dashboard");
       dispatch({ type: NEW_PRODUCT_RESET });
     }
@@ -55,7 +50,6 @@ const AdminProductCreate = () => {
     e.preventDefault();
 
     const myForm = new FormData();
-
     myForm.set("name", name);
     myForm.set("price", price);
     myForm.set("description", description);
@@ -66,7 +60,6 @@ const AdminProductCreate = () => {
       myForm.append("images", image);
     });
 
-    console.log(myForm);
     dispatch(createProduct(myForm));
   };
 
@@ -91,96 +84,112 @@ const AdminProductCreate = () => {
   };
 
   return (
-    <div className="dashboard-main-container">
-    <Sidebar classvalue={'products'}></Sidebar>
-      <div className="dashboard-container">
-          <form
-            className="createProductForm"
-            encType="multipart/form-data"
-            onSubmit={createProductSubmitHandler}
-          >
-            <h2 className='dashboard-heading' style={{color:'burlywood',marginTop:'10px',border:'none'}}>New Product</h2>
+    <Box sx={{ display: "flex", minHeight: "100vh" }}>
+      {/* Sidebar */}
+      <Box sx={{ width: "240px", flexShrink: 0 }}>
+        <Sidebar />
+      </Box>
 
-            <div>
-              <SpellcheckIcon />
-              <input
-                type="text"
-                placeholder="Product Name"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div>
-              <AttachMoneyIcon />
-              <input
-                type="number"
-                placeholder="Price"
-                required
-                onChange={(e) => setPrice(e.target.value)}
-              />
-            </div>
+      {/* Main Content */}
+      <Box sx={{ flexGrow: 1, p: 4 }}>
+        <Box
+          component="form"
+          onSubmit={createProductSubmitHandler}
+          sx={{
+            backgroundColor: "#fff",
+            p: 4,
+            borderRadius: 2,
+            boxShadow: 2,
+            display: "flex",
+            flexDirection: "column",
+            gap: 3,
+          }}
+        >
+          <Typography variant="h5" sx={{ fontWeight: "bold", color: "burlywood" }}>
+            New Product
+          </Typography>
 
-            <div>
-              <DescriptionIcon />
+          <TextField
+            label="Product Name"
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
 
-              <textarea
-                placeholder="Product Description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                cols="30"
-                rows="1"
-              ></textarea>
-            </div>
+          <TextField
+            label="Price"
+            type="number"
+            required
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+          />
 
-            <div>
-              <AccountTreeIcon />
-              <select onChange={(e) => setCategory(e.target.value)}>
-                <option value="">Choose Category</option>
-                {categories.map((cate) => (
-                  <option key={cate} value={cate}>
-                    {cate}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <TextField
+            label="Description"
+            multiline
+            rows={4}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
 
-            <div>
-              <StorageIcon />
-              <input
-                type="number"
-                placeholder="Stock"
-                required
-                onChange={(e) => setStock(e.target.value)}
-              />
-            </div>
-
-            <div id="createProductFormFile">
-              <input
-                type="file"
-                name="avatar"
-                accept="image/*"
-                onChange={createProductImagesChange}
-                multiple
-              />
-            </div>
-
-            <div id="createProductFormImage">
-              {imagesPreview.map((image, index) => (
-                <img key={index} src={image} alt="Product Preview" />
-              ))}
-            </div>
-
-            <Button
-              id="createProductBtn"
-              type="submit"
-              disabled={loading ? true : false}
+          <FormControl fullWidth>
+            <InputLabel>Category</InputLabel>
+            <Select
+              value={category}
+              label="Category"
+              onChange={(e) => setCategory(e.target.value)}
             >
-              Create
-            </Button>
-          </form>
-      </div>
-    </div>
+              <MenuItem value="">Choose Category</MenuItem>
+              {categories.map((cate) => (
+                <MenuItem key={cate} value={cate}>
+                  {cate}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <TextField
+            label="Stock"
+            type="number"
+            required
+            value={stock}
+            onChange={(e) => setStock(e.target.value)}
+          />
+
+          <Button variant="outlined" component="label">
+            Upload Images
+            <input
+              type="file"
+              accept="image/*"
+              hidden
+              multiple
+              onChange={createProductImagesChange}
+            />
+          </Button>
+
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+            {imagesPreview.map((img, idx) => (
+              <Avatar
+                key={idx}
+                src={img}
+                variant="rounded"
+                sx={{ width: 100, height: 100 }}
+              />
+            ))}
+          </Box>
+
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            disabled={loading}
+            sx={{ mt: 2 }}
+          >
+            Create
+          </Button>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

@@ -1,50 +1,134 @@
-import React from 'react';
-// import './dashboard.css';
+import React from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { logoutUser } from '../../actions/userActions'
+import { useDispatch } from 'react-redux'
+import {
+  Dashboard as DashboardIcon,
+  Person as PersonIcon,
+  LocalMall as LocalMallIcon,
+  Class as ClassIcon,
+  Logout as LogoutIcon,
+} from '@mui/icons-material'
+import {
+  Box,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from '@mui/material'
 
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import PersonIcon from '@mui/icons-material/Person';
-import LocalMallIcon from '@mui/icons-material/LocalMall';
-import ClassIcon from '@mui/icons-material/Class';
-import LogoutIcon from '@mui/icons-material/Logout';
-import { Link, useNavigate } from 'react-router-dom';
-import { logoutUser } from '../../actions/userActions';
-import { useDispatch } from 'react-redux';
+const Sidebar = ({ active }) => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-const Sidebar = ({active}) => {
+  const menuItems = [
+    { name: 'dashboard', icon: <DashboardIcon />, label: 'Dashboard', path: '/dashboard' },
+    { name: 'users', icon: <PersonIcon />, label: 'Users', path: '/admin/users' },
+    { name: 'orders', icon: <LocalMallIcon />, label: 'Orders', path: '/admin/orders' },
+    { name: 'products', icon: <ClassIcon />, label: 'Products', path: '/admin/products' },
+  ]
 
-    const dispatch=useDispatch();
-    const navigate=useNavigate();
-    return (
-        <div className='dashboard-sidebar-component'>
-            <div className='sidebar-header'>
-                <div className='Sidebar-heading'><span height='20px' width='20px' style={{position:'relative'}}><img style={{height:'38px',width:'35px',marginRight:'10px',borderRadius:'7px'}} src='/images/new_logo.jpg' alt='logo'></img></span><span>Blue</span> Mart</div>
-            </div>
-            <div className='sidebar-options'>
-                <div className={(active&&active==='dashboard')?`active-link-sidebar`:`sidebar-options-design`}>
-                    <div className='sidebar-options-logo'><DashboardIcon sx={{ fontSize: '2.7rem' }}></DashboardIcon></div>
-                    <div className='sidebar-options-value'><Link to={'/dashboard'} style={{color:'white'}}>Dashboard</Link></div>
-                </div>
-                <div className={(active&&active==='users')?`active-link-sidebar`:`sidebar-options-design`}>
-                    <div className='sidebar-options-logo'><PersonIcon sx={{ fontSize: '2.7rem' }}></PersonIcon></div>
-                    <div className='sidebar-options-value'><Link to={'/admin/users'} style={{color:'white'}}>Users</Link></div>
-                </div>
-                <div className={(active&&active==='orders')?`active-link-sidebar`:`sidebar-options-design`}>
-                    <div className='sidebar-options-logo'><LocalMallIcon sx={{ fontSize: '2.7rem' }}></LocalMallIcon></div>
-                    <div className='sidebar-options-value'><Link to={'/admin/orders'} style={{color:'white'}}>Orders</Link></div>
-                </div>
-                <div className={(active&&active==='products')?`active-link-sidebar`:`sidebar-options-design`}>
-                    <div className='sidebar-options-logo'><ClassIcon sx={{ fontSize: '2.7rem' }}></ClassIcon></div>
-                    <div className='sidebar-options-value'><Link to={'/admin/products'} style={{color:'white'}}>Product</Link></div>
-                </div>
-            </div>
-            <div className='sidebar-footer'>
-                <div className=' sidebar-options-design sidebar-footer-div' style={{cursor:'pointer'}} onClick={()=>{dispatch(logoutUser());navigate('/home')}}>
-                    <div className='sidebar-options-logo'><LogoutIcon></LogoutIcon></div>
-                    <div className='sidebar-options-value dashboard-logout-options'>Logout</div>
-                </div>
-            </div>
-        </div>
-    )
+  return (
+    <Box sx={{
+      width: 240,
+      flexShrink: 0,
+      bgcolor: 'background.paper',
+      height: '100vh',
+      position: 'fixed',
+      left: 0,
+      top: 0,
+      borderRight: '1px solid',
+      borderColor: 'divider',
+      boxShadow: 3
+    }}>
+      <Box sx={{ p: 3, borderBottom: '1px solid', borderColor: 'divider' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            textDecoration: 'none',
+            color: 'text.primary'
+          }}
+          component={Link}
+          to="/"
+        >
+          <img
+            src="/images/new_logo.jpg"
+            alt="Logo"
+            style={{ height: 40, width: 40, borderRadius: 8 }}
+          />
+          <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '20px' }}>
+            Blue Mart
+          </Typography>
+        </Box>
+      </Box>
+
+      <List sx={{ p: 2 }}>
+        {menuItems.map((item) => (
+          <ListItem key={item.name} disablePadding>
+            <ListItemButton
+              component={Link}
+              to={item.path}
+              selected={active === item.name}
+              sx={{
+                borderRadius: 2,
+                mb: 0.5,
+                '&.Mui-selected': {
+                  bgcolor: 'primary.light',
+                  color: 'primary.main',
+                  '&:hover': { bgcolor: 'primary.light' }
+                }
+              }}
+            >
+              <ListItemIcon sx={{
+                minWidth: 40,
+                color: active === item.name ? 'primary.main' : 'text.secondary'
+              }}>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText
+                primary={item.label}
+                primaryTypographyProps={{
+                  fontWeight: active === item.name ? 600 : 400,
+                  color: active === item.name ? 'primary.main' : 'text.primary',
+                  fontSize: '16px'
+                }}
+              />
+            </ListItemButton>
+          </ListItem>
+        ))}
+
+        <ListItem disablePadding>
+          <ListItemButton
+            onClick={() => {
+              dispatch(logoutUser())
+              navigate('/home')
+            }}
+            sx={{
+              borderRadius: 2,
+              mt: 2,
+              color: 'error.main',
+              '&:hover': { bgcolor: 'error.light' }
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 40, color: 'error.main' }}>
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary="Logout"
+              primaryTypographyProps={{
+                fontWeight: 500,
+                fontSize: '16px'
+              }}
+            />
+          </ListItemButton>
+        </ListItem>
+      </List>
+    </Box>
+  )
 }
 
 export default Sidebar

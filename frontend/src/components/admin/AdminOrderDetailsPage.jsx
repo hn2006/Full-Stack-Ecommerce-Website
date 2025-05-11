@@ -1,238 +1,400 @@
-import React, { useEffect, useRef, useState } from 'react'
-import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
-import HouseIcon from '@mui/icons-material/House';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getOrder } from '../../actions/orderActions';
 import { useNavigate, useParams } from 'react-router-dom';
-import Loader from '../layouts/loader/loader';
-import Header from '../layouts/header/header';
-import Footer from '../layouts/footer/Footer';
-import { Button, MenuItem, Select } from '@mui/material';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
+import {
+  Box,
+  Typography,
+  Card,
+  Divider,
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
+  CircularProgress,
+  Select,
+  MenuItem,
+  Button,
+} from '@mui/material';
+
+import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
+import HouseIcon from '@mui/icons-material/House';
+
+import Header from '../layouts/header/header';
+import Footer from '../layouts/footer/Footer';
+
 const AdminOrderDetailsPage = () => {
+  const { orderDetails, loading } = useSelector((state) => state.orderDetails);
+  const { orderId } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const { orderDetails, loading } = useSelector((state) => state.orderDetails);
+  const updateBtn = useRef(null);
+  const [status, setStatus] = useState('');
 
-    const { orderId } = useParams();
+  useEffect(() => {
+    if (orderId) dispatch(getOrder(orderId));
+  }, [dispatch, orderId]);
 
-    const dispatch = useDispatch();
-
-    const navigate=useNavigate();
-
-    const updateBtn=useRef(null);
-
-    const [status, setstatus] = useState('');
-
-    useEffect(() => {
-        if (orderId) {
-            dispatch(getOrder(orderId));
-        }
-
-    }, [dispatch, orderId]);
-
-    useEffect(() => {
-
-        if (orderDetails) {
-
-            if (orderDetails.orderStatus === 'processing') {
-                setstatus('Shipped');
-            }
-            if (orderDetails.orderStatus === 'Shipped') {
-                setstatus('Delivered')
-            }
-        }
-    }, [orderDetails])
-
-    const changehandler = async () => {
-
-        updateBtn.current.disabled=true;
-
-        try {
-
-            const { data } = await axios.put(`/order/admin/updateOrderStatus/${orderId}`, { status: status }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            console.log('status updated');
-
-            toast.success(data.message,{theme:'dark'});
-
-            navigate('/admin/orders');
-
-        }
-        catch(error) {
-
-            toast.error('some error occured',{theme:'dark'});
-
-            updateBtn.current.disabled=false;
-
-        }
+  useEffect(() => {
+    if (orderDetails) {
+      // advance status step
+      if (orderDetails.orderStatus === 'processing') setStatus('Shipped');
+      else if (orderDetails.orderStatus === 'Shipped') setStatus('Delivered');
     }
+  }, [orderDetails]);
 
-
-    const handleChange = (e) => {
-
-        setstatus(e.target.value);
-        console.log(e.target.value)
+  const handleUpdate = async () => {
+    updateBtn.current.disabled = true;
+    try {
+      const { data } = await axios.put(
+        `/order/admin/updateOrderStatus/${orderId}`,
+        { status },
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+      toast.success(data.message, { theme: 'dark' });
+      navigate('/admin/orders');
+    } catch {
+      toast.error('Some error occurred', { theme: 'dark' });
+      updateBtn.current.disabled = false;
     }
+  };
 
-    return (<>
-        {(loading) ? (<Loader></Loader>) : (
-            <>
-                <Header></Header>
-                <div className='main-confirm-container main-confirm-order-page-container'>
-                    <h2 className='confirm-container-heading' style={{ color: 'white', fontSize: '5.2rem', marginTop: '60px' }}>Order Details</h2>
-                    <span style={{ color: 'grey', fontSize: '1.2rem' }}>Id#{orderDetails && orderDetails._id}</span>
-                    <div className='confirm-container order-details-page-container' style={{ border: '4px solid purple' }}>
-                        <div className='confirm-left-div'>
-                            <div className='order-details-user'>
-                                <div className='details-box'>
-                                    <h2>Customer details</h2>
-                                    <span><PermContactCalendarIcon sx={{ position: 'absolute', right: '10px', top: '30px', fontSize: '6rem', color: 'orangered' }}></PermContactCalendarIcon></span>
-                                    <div className='details'>
-                                        <table cellSpacing={9} style={{ marginTop: '20px' }}>
-                                            <tbody>
-                                                <tr>
-                                                    <td style={{ width: '40px' }}>Name:</td><td style={{ color: 'grey', fontWeight: '700' }}>{orderDetails && orderDetails.user.name}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td >Email:</td><td style={{ color: 'grey', fontWeight: '700' }}>{orderDetails && orderDetails.user.email}</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div className='details-box'>
-                                    <h2>Shipping details</h2>
-                                    <span><HouseIcon sx={{ position: 'absolute', right: '10px', top: '30px', fontSize: '7rem', color: 'orangered' }}></HouseIcon></span>
-                                    <div className='details'>
-                                        <h3>Address</h3>
-                                        <div>{orderDetails && orderDetails.shippingInfo.address}</div>
-                                        <div>{`${orderDetails && orderDetails.shippingInfo.city},${orderDetails && orderDetails.shippingInfo.state}-${orderDetails && orderDetails.shippingInfo.pincode},${orderDetails && orderDetails.shippingInfo.country}`}</div>
-                                        <div>{orderDetails && orderDetails.shippingInfo.country}</div>
-                                    </div>
+  const handleChange = (e) => setStatus(e.target.value);
 
-                                </div>
-                            </div>
-                            <div className='order-items-container order-items-page-container'>
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '80vh',
+        }}
+      >
+        <CircularProgress size={80} />
+      </Box>
+    );
+  }
 
-                                <h2 className='order-details-heading'>Order Items Details</h2>
-                                {orderDetails && orderDetails.orderItems && orderDetails.orderItems.map((data) => {
-                                    return (
-                                        <div className='single-order-items-container' key={data._id}>
-                                            <div className='order-product-image'>
-                                                <img src='/images/second.jpg' alt='na'></img>
-                                            </div>
-                                            <div className='order-product-details'>
-                                                <div className='order-items-product-name'>{data.name}</div>
-                                                <div>Quantity : {data.quantity}</div>
-                                                <div>Price : {data.price}</div>
-                                            </div>
-                                            <div className='order-product-price'>
-                                                <h2>Price</h2>
-                                                <div>Rs {data.price} x {data.quantity}</div>
-                                                <div className='order-item-total-price'>Rs {data.price * data.quantity}</div>
-                                            </div>
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        </div>
-                        <div className='confirm-right-div'>
-                            <h2 style={{ color: 'orangered' }}>Order Summary</h2>
-                            <div className='pricing-details'>
-                                <div className='pricing-category'>
-                                    <div className='pricing-label larger-label'>Order Price</div>
-                                    <div className='pricing-info larger-pricing'>Rs {orderDetails && orderDetails.itemsPrice}</div>
-                                </div>
-                            </div>
-                            <div className='pricing-details'>
-                                <div className='pricing-category'>
-                                    <div className='pricing-label'>18% GST</div>
-                                    <div className='pricing-info'>Rs {orderDetails && orderDetails.itemTaxPrice}</div>
-                                </div>
-                            </div>
-                            <div className='pricing-details'>
-                                <div className='pricing-category'>
-                                    <div className='pricing-label'>Shipping Charges*</div>
-                                    <div className='pricing-info'>{orderDetails && orderDetails.shippingPrice}</div>
-                                </div>
-                            </div>
+  return (
+    <>
+      <Header />
 
-                            <div className='pricing-details' style={{ marginTop: '10px', borderTop: '3px solid black', fontSize: '1.8rem', paddingTop: '10px' }}>
-                                <div className='pricing-category'>
-                                    <div className='pricing-label larger-label'>Total Price</div>
-                                    <div className='pricing-info larger-pricing'>Rs {orderDetails && orderDetails.TotalPrice}</div>
-                                </div>
-                            </div>
-                            <div style={{ textAlign: 'right', color: 'grey', marginTop: '10px' }}>*shipping charges are not applicable on orders above rs 1000</div>
-                            <div className='Payment-details-container'>
-                                <h2>Order Status</h2>
-                                <div className='pricing-details'>
-                                    <div className='pricing-category'>
-                                        <div className='pricing-label'>Status</div>
-                                        <div className='pricing-info payment-id'>{orderDetails && orderDetails.orderStatus}</div>
-                                    </div>
-                                </div>
-                                <div className='pricing-details' style={{ width: '100%', height: '100px', display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly' }}>
-                                    <div className='pricing-category' style={{ width: '100%', display: 'flex', justifyContent: 'space-evenly', alignItems: 'center' }}>
-                                        <div className='pricing-label' style={{ width: '30%' }}>Update status</div>
-                                        <div style={{ width: '70%' }}>
-                                            {(orderDetails && orderDetails.orderStatus === "Delivered") ? (
-                                                <>
-                                                    Order is already delivered
-                                                </>
-                                            ) : (
-                                                <>
-                                                    {(orderDetails && orderDetails.orderStatus === 'processing') ? (
-                                                        <>
-                                                            <Select
-                                                                labelId="demo-simple-select-label"
-                                                                id="demo-simple-select"
-                                                                label="Order status"
-                                                                value={status}
-                                                                onChange={handleChange}
-                                                                sx={{ width: '100px', height: '35px' }}
-                                                                color='secondary'
-                                                                variant='outlined'
-                                                            >
-                                                                <MenuItem value={'Shipped'}>Shipped</MenuItem>
-                                                                <MenuItem value={'Delivered'}>Delivered</MenuItem>
-                                                            </Select>
-                                                        </>
-                                                    ) : (<div>
-                                                        <Select
-                                                            labelId="demo-simple-select-label"
-                                                            id="demo-simple-select"
-                                                            value={status}
-                                                            label="Order status"
-                                                            onChange={handleChange}
-                                                        >
-                                                            <MenuItem value={'Delivered'}>Delivered</MenuItem>
-                                                        </Select>
-                                                    </div>)}
-                                                </>
-                                            )}
+      <Box
+        sx={{
+          maxWidth: '1200px',
+          mx: 'auto',
+          mt: '110px',
+          mb: '50px',
+          px: { xs: 2, md: 3 },
+        }}
+      >
+        {/* Title */}
+        <Typography
+          sx={{
+            textAlign: 'center',
+            color: '#1976d2',
+            fontSize: '48px',
+            fontWeight: 600,
+            mb: 1,
+          }}
+        >
+          Order Details
+        </Typography>
+        <Typography
+          component="span"
+          sx={{
+            display: 'block',
+            textAlign: 'center',
+            color: '#757575',
+            fontSize: '18px',
+            mb: 3,
+          }}
+        >
+          ID#{orderDetails?._id}
+        </Typography>
 
-                                        </div>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' },
+            gap: 4,
+          }}
+        >
+          {/* Left Column */}
+          <Box sx={{ flex: 2, display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {/* Customer & Shipping */}
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', md: 'row' },
+                gap: 3,
+              }}
+            >
+              <Card sx={{ flex: 1, p: 3, borderLeft: '4px solid #1976d2' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <PermContactCalendarIcon
+                    sx={{ color: '#1976d2', fontSize: 40, mr: 1.5 }}
+                  />
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Customer Details
+                  </Typography>
+                </Box>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell
+                        sx={{ border: 'none', p: '8px 0', fontWeight: 500 }}
+                      >
+                        Name:
+                      </TableCell>
+                      <TableCell sx={{ border: 'none', p: '8px 0' }}>
+                        {orderDetails?.user?.name}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell
+                        sx={{ border: 'none', p: '8px 0', fontWeight: 500 }}
+                      >
+                        Email:
+                      </TableCell>
+                      <TableCell sx={{ border: 'none', p: '8px 0' }}>
+                        {orderDetails?.user?.email}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Card>
 
-                                    </div>
-                                    <Button ref={updateBtn} sx={{ width: '80%', height: '30px', backgroundColor: 'orangered' }} variant='contained' onClick={() => { changehandler() }}>Update</Button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <Footer></Footer>
-            </>
-        )
-        }
+              <Card sx={{ flex: 1, p: 3, borderLeft: '4px solid #4caf50' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <HouseIcon sx={{ color: '#4caf50', fontSize: 40, mr: 1.5 }} />
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Shipping Details
+                  </Typography>
+                </Box>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell
+                        sx={{ border: 'none', p: '8px 0', fontWeight: 500 }}
+                      >
+                        Address:
+                      </TableCell>
+                      <TableCell sx={{ border: 'none', p: '8px 0' }}>
+                        {orderDetails?.shippingInfo?.address}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell
+                        sx={{ border: 'none', p: '8px 0', fontWeight: 500 }}
+                      >
+                        City/State:
+                      </TableCell>
+                      <TableCell sx={{ border: 'none', p: '8px 0' }}>
+                        {`${orderDetails?.shippingInfo?.city}, ${orderDetails?.shippingInfo?.state}`}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell
+                        sx={{ border: 'none', p: '8px 0', fontWeight: 500 }}
+                      >
+                        Postal Code:
+                      </TableCell>
+                      <TableCell sx={{ border: 'none', p: '8px 0' }}>
+                        {orderDetails?.shippingInfo?.pincode}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell
+                        sx={{ border: 'none', p: '8px 0', fontWeight: 500 }}
+                      >
+                        Country:
+                      </TableCell>
+                      <TableCell sx={{ border: 'none', p: '8px 0' }}>
+                        {orderDetails?.shippingInfo?.country}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Card>
+            </Box>
+
+            {/* Order Items */}
+            <Card sx={{ p: 3, borderRadius: 2 }}>
+              <Typography
+                sx={{
+                  fontSize: '24px',
+                  fontWeight: 600,
+                  mb: 2,
+                  pb: 1,
+                  borderBottom: '1px solid #e0e0e0',
+                }}
+              >
+                Order Items
+              </Typography>
+
+              {orderDetails?.orderItems?.map((item) => (
+                <Card
+                  key={item._id}
+                  sx={{
+                    display: 'flex',
+                    p: 2,
+                    mb: 2,
+                    borderRadius: 1,
+                    bgcolor: '#f5f5f5',
+                  }}
+                >
+                  <Box sx={{ width: 80, height: 80, mr: 2 }}>
+                    <img
+                      src={item.image || '/images/second.jpg'}
+                      alt={item.name}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        borderRadius: 4,
+                      }}
+                    />
+                  </Box>
+                  <Box sx={{ flex: 1 }}>
+                    <Typography sx={{ fontSize: 20, fontWeight: 600 }}>
+                      {item.name}
+                    </Typography>
+                    <Typography>Quantity: {item.quantity}</Typography>
+                    <Typography>Price: ₹{item.price}</Typography>
+                  </Box>
+                  <Box sx={{ textAlign: 'right' }}>
+                    <Typography>₹{item.price} × {item.quantity}</Typography>
+                    <Typography sx={{ fontWeight: 600, color: '#d32f2f' }}>
+                      ₹{item.price * item.quantity}
+                    </Typography>
+                  </Box>
+                </Card>
+              ))}
+            </Card>
+          </Box>
+
+          {/* Right Column */}
+          <Box sx={{ width: { xs: '100%', md: 350 }, display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {/* Summary */}
+            <Card sx={{ p: 3, borderRadius: 2 }}>
+              <Typography
+                sx={{
+                  fontSize: '24px',
+                  fontWeight: 600,
+                  color: '#1976d2',
+                  mb: 2,
+                  pb: 1,
+                  borderBottom: '1px solid #e0e0e0',
+                }}
+              >
+                Order Summary
+              </Typography>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell sx={{ border: 'none', p: '8px 0' }}>
+                      Order Price:
+                    </TableCell>
+                    <TableCell
+                      sx={{ border: 'none', p: '8px 0', textAlign: 'right' }}
+                    >
+                      ₹{orderDetails?.itemsPrice}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ border: 'none', p: '8px 0' }}>
+                      18% GST:
+                    </TableCell>
+                    <TableCell
+                      sx={{ border: 'none', p: '8px 0', textAlign: 'right' }}
+                    >
+                      ₹{orderDetails?.itemTaxPrice}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell sx={{ border: 'none', p: '8px 0' }}>
+                      Shipping:
+                    </TableCell>
+                    <TableCell
+                      sx={{ border: 'none', p: '8px 0', textAlign: 'right' }}
+                    >
+                      {orderDetails?.shippingPrice === 0
+                        ? 'FREE'
+                        : `₹${orderDetails?.shippingPrice}`}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+              <Divider sx={{ my: 2 }} />
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Typography sx={{ fontSize: 20, fontWeight: 600 }}>
+                  Total Price:
+                </Typography>
+                <Typography sx={{ fontSize: 20, fontWeight: 600, color: '#d32f2f' }}>
+                  ₹{orderDetails?.TotalPrice}
+                </Typography>
+              </Box>
+              <Typography
+                sx={{
+                  textAlign: 'right',
+                  fontSize: 14,
+                  color: '#757575',
+                  mt: 1,
+                }}
+              >
+                *Free shipping on orders above ₹1000
+              </Typography>
+            </Card>
+
+            {/* Update Status */}
+            {orderDetails?.orderStatus !== 'Delivered' && (
+              <Card sx={{ p: 3, borderRadius: 2 }}>
+                <Typography
+                  sx={{
+                    fontSize: 24,
+                    fontWeight: 600,
+                    mb: 2,
+                    pb: 1,
+                    borderBottom: '1px solid #e0e0e0',
+                  }}
+                >
+                  Update Status
+                </Typography>
+                <Select
+                  fullWidth
+                  value={status}
+                  onChange={handleChange}
+                  sx={{ mb: 2 }}
+                >
+                  {orderDetails.orderStatus === 'processing' && (
+                    <MenuItem value="Shipped">Shipped</MenuItem>
+                  )}
+                  <MenuItem value="Delivered">Delivered</MenuItem>
+                </Select>
+                <Button
+                  ref={updateBtn}
+                  variant="contained"
+                  color="secondary"
+                  fullWidth
+                  onClick={handleUpdate}
+                >
+                  Update
+                </Button>
+              </Card>
+            )}
+          </Box>
+        </Box>
+      </Box>
+
+      <Footer />
     </>
-    )
-}
+  );
+};
 
-export default AdminOrderDetailsPage
+export default AdminOrderDetailsPage;
